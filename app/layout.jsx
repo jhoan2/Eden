@@ -1,5 +1,5 @@
 import "./globals.css";
-import ConnectKitWrapper from "./ConnectKitWrapper";
+import ConnectKitWrapper from "../components/ConnectKitWrapper";
 
 // eslint-disable-next-line react/prop-types
 export default function RootLayout({ children }) {

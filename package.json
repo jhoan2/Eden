@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "connectkit": "^1.1.0",
     "eslint-config-next": "13.0.6",
+    "ethers": "^5.7.2",
     "next": "13.0.6",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "wagmi": "^0.8.10"
   },
   "devDependencies": {
     "@tableland/local": "^0.0.4",

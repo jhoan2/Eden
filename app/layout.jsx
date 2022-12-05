@@ -11,7 +11,9 @@ export default function RootLayout({ children }) {
       */}
       <head />
       <body>
-        <ConnectKitWrapper>{children}</ConnectKitWrapper>
+        <ConnectKitWrapper>
+            {children}
+        </ConnectKitWrapper>
       </body>
     </html>
   );

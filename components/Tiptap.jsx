@@ -2,14 +2,22 @@
 import React, { useEffect } from 'react'
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Typography from '@tiptap/extension-typography'
+import UniqueID from '@tiptap-pro/extension-unique-id'
 
 const Tiptap = () => {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Typography,
+      UniqueID.configure({
+        types: ['heading', 'paragraph'],
+      })
     ],
     content: '<p>Hello World! 🌎️</p>',
   })
+
+//const json = editor.getJSON();
 
   return (
     <div>

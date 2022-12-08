@@ -12,6 +12,7 @@
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
     "@tiptap-pro/extension-unique-id": "^2.0.0-beta.203",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.205",
     "@tiptap/extension-typography": "^2.0.0-beta.205",
     "@tiptap/react": "^2.0.0-beta.205",
     "@tiptap/starter-kit": "^2.0.0-beta.205",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@tableland/local": "^0.0.4",
+    "@tailwindcss/typography": "^0.5.8",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",

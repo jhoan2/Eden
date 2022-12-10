@@ -1,18 +1,19 @@
 "use client";
 
-import { WagmiConfig, createClient } from "wagmi";
+import { WagmiConfig, createClient, chain } from "wagmi";
 import {
   ConnectKitProvider,
-  ConnectKitButton,
   getDefaultClient,
 } from "connectkit";
 
 const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+const chains = [chain.localhost, chain.goerli];
 
 const client = createClient(
   getDefaultClient({
-    appName: "Your App Name",
+    appName: "Eden",
     alchemyId,
+    chains,
   })
 );
 
@@ -21,7 +22,6 @@ export default function ConnectKitWrapper({ children }) {
     <WagmiConfig client={client}>
       <ConnectKitProvider>
         {children}
-        <ConnectKitButton />
       </ConnectKitProvider>
     </WagmiConfig>
   );

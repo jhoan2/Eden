@@ -3,6 +3,7 @@ import ConnectKitWrapper from "../components/ConnectKitWrapper";
 
 // eslint-disable-next-line react/prop-types
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en">
       {/*
@@ -12,7 +13,7 @@ export default function RootLayout({ children }) {
       <head />
       <body>
         <ConnectKitWrapper>
-            {children}
+          {children}
         </ConnectKitWrapper>
       </body>
     </html>

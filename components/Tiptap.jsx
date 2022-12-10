@@ -2,25 +2,39 @@
 import React, { useEffect } from 'react'
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import Typography from '@tiptap/extension-typography'
+import Placeholder from '@tiptap/extension-placeholder'
+// Needs tiptap pro to use.
 import UniqueID from '@tiptap-pro/extension-unique-id'
+
 
 const Tiptap = () => {
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mt-20 ml-10 dark:prose-invert w-screen h-screen focus:outline-none  ',
+      },
+    },
     extensions: [
       StarterKit,
-      Typography,
       UniqueID.configure({
         types: ['heading', 'paragraph'],
-      })
+      }),
     ],
-    content: '<p>Hello World! 🌎️</p>',
+    content: `
+    <h1>Untitled...</h1>
+    <p>Start typing here..</p>
+    `,
+    
   })
 
+  if (!editor) {
+    return null
+  }
 //const json = editor.getJSON();
 
   return (
-    <div>
+    <div >
+
 
     {editor && <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
         <button

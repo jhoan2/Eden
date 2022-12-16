@@ -48,7 +48,7 @@ export default function Home() {
       <div>
         <nav className="flex h-9 items-center justify-between" aria-label="Global">
           <div className="flex lg:min-w-0 lg:flex-1" aria-label="Global">
-          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">EDEN</h2>
+          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">IKAROS</h2>
           </div>
           <div className="flex lg:hidden">
             <button
@@ -69,7 +69,7 @@ export default function Home() {
             <div className="flex h-9 items-center justify-between">
               <div className="flex">
                 <a href="#" className="-m-1.5 p-1.5">
-                  <span className="sr-only">Eden | Note taking app</span>
+                  <span className="sr-only">IKAROS | Note taking app</span>
                   <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">EDEN</h2>
                 </a>
               </div>

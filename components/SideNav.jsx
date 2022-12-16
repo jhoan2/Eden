@@ -11,7 +11,7 @@ export default function SideNav() {
                     <li className='p-2 hover:bg-emerald-700 hover:ring-emerald-700 '>
                         <Link href='/'>
                             <span>
-                                <h2 className="text-1xl font-semibold text-gray-800 dark:text-white text-center">EDEN</h2>
+                                <h2 className="text-1xl font-semibold text-gray-800 dark:text-white text-center">IKAROS</h2>
                             </span>
                         </Link>
                     </li>

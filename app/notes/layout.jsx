@@ -1,17 +1,15 @@
-import SideBar from "../../components/SideBar";
+import SideNav from "../../components/SideNav";
 
 export default function NoteLayout({ children }) {
     return (
 
-        <body>
-            <div className="flex">
+        <body className="flex h-screen overflow-y-hidden">
                 <div>
-                    <SideBar />
+                    <SideNav />
                 </div>
-                <div>
+                <div className="flex overflow-y-auto justify-center w-full">
                     {children}
                 </div>  
-            </div>
         </body>
 
     );

@@ -1,5 +1,5 @@
 import "./globals.css";
-import ConnectKitWrapper from "../components/ConnectKitWrapper";
+import Providers from "../components/Providers";
 
 // eslint-disable-next-line react/prop-types
 export default function RootLayout({ children }) {
@@ -12,9 +12,9 @@ export default function RootLayout({ children }) {
       */}
       <head />
       <body>
-        <ConnectKitWrapper>
+        <Providers>
           {children}
-        </ConnectKitWrapper>
+        </Providers>
       </body>
     </html>
   );

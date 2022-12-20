@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useContext } from 'react'
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -8,8 +8,13 @@ import Image from '@tiptap/extension-image'
 import UniqueID from '@tiptap-pro/extension-unique-id'
 import Highlight from '@tiptap/extension-highlight'
 import Youtube from '@tiptap/extension-youtube'
+import { AppContext } from './AppProvider'
+
+
 
 const Tiptap = () => {
+  const { addToChangedNotes, allNotes, updateChangedNotes } = useContext(AppContext)
+  
   const editor = useEditor({
     editorProps: {
       attributes: {
@@ -51,7 +56,23 @@ const Tiptap = () => {
           Press Command/Ctrl + Enter to leave the fenced code block and continue typing in boring paragraphs.
         </p>
     `,
-    
+  onUpdate: ({ editor}) => {
+    const json = editor.getJSON();
+    const id = json.content[0].attrs.id;
+    const title = json.content[0].content[0].text;
+    //if the hashmap has the note then update it else add it. 
+    if(allNotes.has(id)) {
+      // update it
+      updateChangedNotes({id: id, changedNotes: json})
+    } else {
+      allNotes.set(id, title)
+      addToChangedNotes({id: id, changedNotes: json})
+    }
+    // const note = formatJSON(json)
+    //format the json into an object,.
+    //addToChangedNotes(json)
+    //changedNote: [{}, {}]
+  }
   })
 
   if (!editor) {

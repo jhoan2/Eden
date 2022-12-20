@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { ConnectKitButton } from 'connectkit'
@@ -10,10 +10,10 @@ import useIsMounted from '../hooks/useIsMounted'
 
 
 
+
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMounted = useIsMounted();
-
 
   return (
     <div className="isolate bg-white">

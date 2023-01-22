@@ -6,7 +6,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link';
 import useIsMounted from '../hooks/useIsMounted'
 import CreateTableButton from '../components/CreateTableButton'
-
+import { ConnectKitButton } from "connectkit";
 
 
 export default function Home() {

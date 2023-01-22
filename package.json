@@ -22,13 +22,11 @@
     "@tiptap/react": "^2.0.0-beta.205",
     "@tiptap/starter-kit": "^2.0.0-beta.205",
     "connectkit": "^1.1.0",
-    "connectkit-next-siwe": "^0.0.2",
     "eslint-config-next": "13.0.6",
     "ethers": "^5.7.2",
     "immer": "^9.0.16",
     "lowlight": "^2.8.0",
     "next": "13.0.6",
-    "siwe": "^2.1.3",
     "use-immer": "^0.8.1",
     "wagmi": "^0.8.10"
   },

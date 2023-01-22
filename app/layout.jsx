@@ -1,6 +1,9 @@
-import './globals.css'
+import "./globals.css";
+import Providers from "../components/Providers";
 
+// eslint-disable-next-line react/prop-types
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en">
       {/*
@@ -8,7 +11,11 @@ export default function RootLayout({ children }) {
         head.jsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
       <head />
-      <body>{children}</body>
+      <body>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
-  )
+  );
 }

@@ -1,13 +1,11 @@
 'use client'
 import React, { useState, useContext, useEffect } from 'react'
-import { AppContext } from './AppProvider';
 import SideBarChanges from './SideBarChanges';
 import SideBarFolders from './SideBarFolders';
 import SearchBar from './SearchBar';
-import { connect } from "@tableland/sdk";
+
 
 // import import useIsMounted from '../hooks/useIsMounted'
-const tableland = connect({ chain: "local-tableland" })
 
 const formatJSON = (json) => {
   //[{changedNotes: {type: content: Array}, id: ''}]
@@ -31,7 +29,6 @@ const publishNotes = async (notes) => {
 }
 
 export default function SideBar({sideBarView, setSideBarView}) {
-    const {allNotes, changedNotes} = useContext(AppContext)
     // const isMounted = useIsMounted();
     const [ toggleCollapse, setToggleCollapse ] = useState(false);
 

@@ -5,6 +5,7 @@ import { useImmerReducer } from "use-immer";
 const allNotes = new Map()
 
 const initialState = {
+  tableName: '',
   changedNotes: [],
 }
 
@@ -15,10 +16,13 @@ function AppReducer( draft, action ) {
           return void draft.changedNotes.push(payload.changedNotes)
 
           //After Adding 
-          //[{id: '', changedNotes: JSON}]
+          //[{id: '', changedNotes: JSON}] 
       case "UPDATE_CHANGED_NOTES":
           return void draft.changedNotes.map(note => (note.id === payload.changedNotes.id) ? note.changedNotes = payload.changedNotes.changedNotes : null)
-
+      case "UPDATE_TABLE_NAME":
+          draft.tableName = payload.tableName
+          return draft
+      
       default: 
           throw new Error(`No case for type ${type} found`)
   }
@@ -47,9 +51,18 @@ export default function AppProvider({children}) {
     })
   }
 
+  const updateTableName = (name) => {
+    dispatch({
+      type: "UPDATE_TABLE_NAME",
+      payload: {
+        tableName: name,
+      }
+    })
+  }
   const value = {
     addToChangedNotes,
     updateChangedNotes,
+    updateTableName,
     changedNotes: state.changedNotes,
     allNotes: allNotes
   }

@@ -3,11 +3,9 @@
 import { useState, useContext } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ConnectKitButton } from 'connectkit'
 import Link from 'next/link';
 import useIsMounted from '../hooks/useIsMounted'
-
-
+import CreateTableButton from '../components/CreateTableButton'
 
 
 
@@ -69,7 +67,7 @@ export default function Home() {
             <div className="flex h-9 items-center justify-between">
               <div className="flex">
                 <a href="#" className="-m-1.5 p-1.5">
-                  <span className="sr-only">IKAROS | Note taking app</span>
+                  <span className="sr-only">ICARUS | Note taking app</span>
                   <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">EDEN</h2>
                 </a>
               </div>
@@ -87,7 +85,7 @@ export default function Home() {
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-gray-500/10">
                 <div className="py-6">
-                  <ConnectKitButton />
+                <ConnectKitButton />
                 </div>
               </div>
             </div>
@@ -119,15 +117,7 @@ export default function Home() {
                 </span>
               </Link>              
 
-                <a
-                  href="#"
-                  className="inline-block rounded-lg px-4 py-1.5 text-base font-semibold leading-7 text-gray-900 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
-                >
-                  Live demo
-                  <span className="text-gray-400" aria-hidden="true">
-                    &rarr;
-                  </span>
-                </a>
+              <CreateTableButton />
               </div>
             </div>
             <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">

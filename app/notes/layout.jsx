@@ -1,15 +1,14 @@
 import SideNav from "../../components/SideNav";
-
-const getNotes = async() => {
-    const res = await fetch('http://localhost:8080/chain/31337/tables/1')
-    if(!res.ok) {
-        throw new Error('Faild to fetch data')
-    }
-    return res.json()
-}
+// const getNotes = async() => {
+//     const res = await fetch('http://localhost:8080/chain/31337/tables/1')
+//     if(!res.ok) {
+//         throw new Error('Faild to fetch data')
+//     }
+//     return res.json()
+// }
 export default async function NoteLayout({ children }) {
-    const notes = await getNotes();
-    const tableName = notes.name
+    // const notes = await getNotes();
+    // const tableName = notes.name
 
     return (
 

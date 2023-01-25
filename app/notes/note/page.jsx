@@ -1,7 +1,7 @@
-import Tiptap from '../../../components/Tiptap'
+import Editor from "../../../components/Editor"
 
 export default function NotePage() {
   return (
-      <Tiptap />
+      <Editor />
   )
 }

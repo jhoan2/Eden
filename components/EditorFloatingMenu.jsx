@@ -1,7 +1,7 @@
 
 export default function EditorFloatingMenu({editor}) {
   return (
-    <div className='flex center border-2 space-x-2 shadow-md'>
+    <div className='flex center border-2 space-x-2 shadow-md bg-white'>
         <div className="hover:bg-gray-200 flex align-center">
             <button
             onClick={() => editor.chain().focus().toggleBold().run()}

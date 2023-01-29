@@ -16,7 +16,8 @@ import Superscript from '@tiptap/extension-superscript'
 import EditorMenu from './EditorMenu'
 import EditorFloatingMenu from './EditorFloatingMenu'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import { lowlight } from 'lowlight/lib/core'
+import { lowlight } from "lowlight";
+
 
 const Editor = () => {
   const { addToChangedNotes, allNotes, updateChangedNotes } = useContext(AppContext)

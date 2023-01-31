@@ -6,13 +6,19 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link';
 import useIsMounted from '../hooks/useIsMounted'
 import CreateTableButton from '../components/CreateTableButton'
-import { ConnectKitButton } from "connectkit";
-
+import "@biconomy/web3-auth/dist/src/style.css"
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMounted = useIsMounted();
-
+  const SocialLoginDynamic = dynamic(
+    () => import("../components/Auth").then((res) => res.default),
+    {
+      ssr: false,
+    }
+  );
   return (
     <div className="isolate bg-white">
     <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
@@ -46,7 +52,7 @@ export default function Home() {
       <div>
         <nav className="flex h-9 items-center justify-between" aria-label="Global">
           <div className="flex lg:min-w-0 lg:flex-1" aria-label="Global">
-          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">IKAROS</h2>
+          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">icarus</h2>
           </div>
           <div className="flex lg:hidden">
             <button
@@ -59,7 +65,12 @@ export default function Home() {
             </button>
           </div>
           <div className="hidden lg:flex lg:min-w-0 lg:flex-1 lg:justify-end">
-              {isMounted ? <ConnectKitButton /> : null}
+              {isMounted ? 
+                <Suspense fallback={<div>Loading...</div>}>
+                  <SocialLoginDynamic />
+                </Suspense>
+                : null
+              }
           </div>
         </nav>
         <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -85,7 +96,12 @@ export default function Home() {
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-gray-500/10">
                 <div className="py-6">
-                <ConnectKitButton />
+                {isMounted ? 
+                <Suspense fallback={<div>Loading...</div>}>
+                  <SocialLoginDynamic />
+                </Suspense>
+                : null
+                }
                 </div>
               </div>
             </div>

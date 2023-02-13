@@ -13,16 +13,16 @@ export default function SideNav() {
                     <li className='p-2 hover:bg-emerald-700 hover:ring-emerald-700 '>
                         <Link href='/'>
                             <span>
-                                <h2 className="text-1xl font-semibold text-gray-800 dark:text-white text-center">IKAROS</h2>
+                                <h2 className="text-1xl font-semibold text-gray-800 dark:text-white text-center">icarus</h2>
                             </span>
                         </Link>
                     </li>
                     <li className='p-2 hover:bg-emerald-700 hover:ring-emerald-700 '>
                         <Link href='/notes/note' onClick={() => setSideBarView(true)}>
                         <span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
-                            </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                        </svg>
                         </span>
                         </Link>
                     </li>
@@ -34,6 +34,13 @@ export default function SideNav() {
                                 </svg>
                             </span>
                         </button>
+                    </li>
+                    <li className='p-2 hover:bg-emerald-700 hover:ring-emerald-700'>
+                        <Link href='/'>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
+                            </svg>
+                        </Link>                        
                     </li>
                     <li className='p-2 hover:bg-emerald-700 hover:ring-emerald-700'>
                         <Link href='/notes/graph'>

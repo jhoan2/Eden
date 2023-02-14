@@ -1,8 +1,10 @@
 'use client'
 import React, { useState, useContext, useEffect } from 'react'
-import SideBarChanges from './SideBarChanges';
+import SideBarPublish from './SideBarPublish'
 import SideBarFolders from './SideBarFolders';
 import SearchBar from './SearchBar';
+import SideBarButtons from './SideBarButtons';
+
 
 
 // import import useIsMounted from '../hooks/useIsMounted'
@@ -32,7 +34,7 @@ export default function SideBar({sideBarView, setSideBarView}) {
     // const isMounted = useIsMounted();
     const [ toggleCollapse, setToggleCollapse ] = useState(false);
 
-  return (
+    return (
      <div>
         <div>
             <div className='pl-2 pt-2'>
@@ -44,9 +46,6 @@ export default function SideBar({sideBarView, setSideBarView}) {
                     </button> : null}
             </div>
             <div className={`${toggleCollapse ? 'w-0 collapse' : 'w-64'} flex flex-col h-screen px-4 py-8 bg-white border-r dark:bg-gray-800 dark:border-gray-600 `}>
-                {/* <div className="relative mt-6">
-                    <ConnectKitButton />
-                </div> */}
                 <div>
                     <span className='flex justify-end'>
                         <button className='hover:bg-gray-800 rounded-md bg-gray-600 text-white' onClick={() => setToggleCollapse(true)}>
@@ -56,17 +55,22 @@ export default function SideBar({sideBarView, setSideBarView}) {
                         </button>
                     </span>            
                 </div>
-                <div>
+                <div className='flex-col content-end overflow-y-auto'>
                     <div className="relative mt-6">
                         {sideBarView ? 
                             <SearchBar />
                             : <button onClick={() => {publishNotes(changedNotes)}}>publish</button>
                         }        
                     </div>
+                    <div className='pt-2'>
+                        <SideBarButtons />
+                    </div>
                     <hr className="my-6 border-gray-200 dark:border-gray-600" />
                     <div>
-                        {sideBarView ? (<SideBarFolders />) : <SideBarChanges allNotes={allNotes} />}
+                        {/* Should map through noteTree JSON to pass title and such to render list of buttons as sidebarfolders */}
+                        {sideBarView ? (<SideBarFolders />) : <SideBarPublish  />}
                     </div>
+
                 </div>
             </div>
         </div>

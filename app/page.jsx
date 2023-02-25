@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link';
@@ -9,16 +9,42 @@ import CreateTableButton from '../components/CreateTableButton'
 import "@biconomy/web3-auth/dist/src/style.css"
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { useNoteStore } from '../components/store';
+import { Database } from "@tableland/sdk";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [returningUser, setReturningUser] = useState(false);
+  const db = new Database();
   const isMounted = useIsMounted();
+  const smartAccountAddress = useNoteStore((state) => state.smartAccountAddress);
+
   const SocialLoginDynamic = dynamic(
     () => import("../components/Auth").then((res) => res.default),
     {
       ssr: false,
     }
   );
+
+  const fetchReturningUser = async (smartAccountAddress) => {
+    const db = Database.readOnly("maticmum");
+    const { results } = await db.prepare(`SELECT * FROM icarus_80001_5720 WHERE pub_address='${smartAccountAddress}';`).all();
+    return results
+  }
+
+  useEffect(() => {
+    if (smartAccountAddress) {
+      try {
+        fetchReturningUser(smartAccountAddress).then((result) => {
+          if (result[0]?.pub_adress === smartAccountAddress) setReturningUser(true)
+        })
+      } catch (err) {
+        console.log({message: err})
+      }
+    }
+
+  }, [smartAccountAddress])
+
   return (
     <div className="isolate bg-white">
     <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
@@ -78,7 +104,7 @@ export default function Home() {
             <div className="flex h-9 items-center justify-between">
               <div className="flex">
                 <a href="#" className="-m-1.5 p-1.5">
-                  <span className="sr-only">ICARUS | Note taking app</span>
+                  <span className="sr-only">icarus | Note taking app</span>
                   <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">EDEN</h2>
                 </a>
               </div>
@@ -121,20 +147,29 @@ export default function Home() {
                 Cultivate organized thoughts and never let your ideas wither away with our app. Grow and nurture your ideas together with our collaborative note taking app.
                 Connect your wallet to get started.
               </p>
-              <div className="mt-8 flex gap-x-4 sm:justify-center">
               
-              <Link 
-              href="/notes/note"
-              className="inline-block rounded-lg bg-emerald-600 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm ring-1 ring-emerald-600 hover:bg-emerald-700 hover:ring-emerald-700"
-            >
-                Launch App
-                <span className="text-emerald-200" aria-hidden="true">
-                  &rarr;
-                </span>
-              </Link>              
+              {smartAccountAddress ?
+                <div>
+                  {returningUser ? 
+                  <div className="mt-8 flex gap-x-4 sm:justify-center">
+                  <Link 
+                  href="/notes/note"
+                  className="inline-block rounded-lg bg-emerald-600 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm ring-1 ring-emerald-600 hover:bg-emerald-700 hover:ring-emerald-700"
+                  >
+                    Launch App
+                    <span className="text-emerald-200" aria-hidden="true">
+                      &rarr;
+                    </span>
+                  </Link>              
+                </div> :
+                <div className="mt-8 flex gap-x-4 sm:justify-center">
+                  <CreateTableButton /> 
+                </div>
+                  }
+                </div> :
+                null
+              }
 
-              <CreateTableButton />
-              </div>
             </div>
             <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">
               <svg

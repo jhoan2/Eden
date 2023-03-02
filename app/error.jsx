@@ -1,4 +1,4 @@
-'use client'; // Error components must be Client components
+'use client'; 
 
 import { useEffect } from 'react';
 import Link from 'next/link'
@@ -7,34 +7,20 @@ export default function Error({
   reset,
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error);
   }, [error]);
 
   return (
-    <div>
-      <nav aria-label="Global">
-        <div className='p-2' aria-label="Global">
-        <Link href="/" className="flex rounded-lg p-2 w-min text-base font-semibold leading-7 text-gray-900 ring-1 bg-emerald-300 ring-gray-900/10 hover:ring-gray-900/20">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/>
-          <path d="M10.828 12l4.95 4.95-1.414 1.414L8 12l6.364-6.364 1.414 1.414z"/>
-        </svg>
-          icarus
-        </Link>
-        </div>
-      </nav>
-    <div className='flex h-screen justify-center items-center'>
-      <div>
-        <h2>Something went wrong!</h2>
-        <button
-        onClick={() => reset()}
-        className="inline-block rounded-lg px-4 py-1.5 text-base font-semibold leading-7 text-gray-900 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
-        >
-          Try again
-        </button>
+    <main class="grid min-h-full place-items-center bg-white py-24 px-6 sm:py-32 lg:px-8">
+    <div class="text-center">
+      <p class="text-base font-semibold text-emerald-600">404</p>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Page not found</h1>
+      <p class="mt-6 text-base leading-7 text-gray-600">Sorry, we couldn’t find the page you’re looking for.</p>
+      <div class="mt-10 flex items-center justify-center gap-x-6">
+        <Link href='/' class="rounded-md bg-emerald-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">Go back home</Link>
+        <button onClick={() => reset()} class="text-sm font-semibold text-gray-900">Try again <span aria-hidden="true">&rarr;</span></button>
       </div>
     </div>
-    </div>
-
+  </main>
   );
 }

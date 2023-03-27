@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
-import { useNoteStore } from '../store'
+import { useNoteStore } from '../store';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function AddFolder() {
@@ -20,7 +20,7 @@ export default function AddFolder() {
 
   const submitFolder = () => {
     const folderId = uuidv4();
-    const folderObject = {"id": folderId, "value": folderName}
+    const folderObject = {"id": folderId, "value": folderName, notes: []}
     if(!noteTreeChanged) {setNoteTreeChanged()}
     addFolder(folderObject)
     setFolderName(' ')

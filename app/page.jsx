@@ -11,13 +11,17 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { useNoteStore } from '../components/store';
 import { Database } from "@tableland/sdk";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [returningUser, setReturningUser] = useState(false);
-  const db = new Database();
   const isMounted = useIsMounted();
   const smartAccountAddress = useNoteStore((state) => state.smartAccountAddress);
+  const userTableName = useNoteStore((state) => state.user.owned_table);
+  const userID = useNoteStore((state) => state.user.id);
+  const updateUser = useNoteStore((state) => state.updateUser);
 
   const SocialLoginDynamic = dynamic(
     () => import("../components/Auth").then((res) => res.default),
@@ -25,7 +29,7 @@ export default function Home() {
       ssr: false,
     }
   );
-
+  
   const fetchReturningUser = async (smartAccountAddress) => {
     const db = Database.readOnly("maticmum");
     const { results } = await db.prepare(`SELECT * FROM icarus_80001_5720 WHERE pub_address='${smartAccountAddress}';`).all();
@@ -36,14 +40,17 @@ export default function Home() {
     if (smartAccountAddress) {
       try {
         fetchReturningUser(smartAccountAddress).then((result) => {
-          if (result[0]?.pub_adress === smartAccountAddress) setReturningUser(true)
+          if (result[0]?.pub_address === smartAccountAddress) {
+            setReturningUser(true)
+            updateUser(result[0])
+          }
         })
       } catch (err) {
         console.log({message: err})
       }
     }
 
-  }, [smartAccountAddress])
+  }, [smartAccountAddress, userTableName])
 
   return (
     <div className="isolate bg-white">
@@ -92,9 +99,18 @@ export default function Home() {
           </div>
           <div className="hidden lg:flex lg:min-w-0 lg:flex-1 lg:justify-end">
               {isMounted ? 
+              <div>
                 <Suspense fallback={<div>Loading...</div>}>
                   <SocialLoginDynamic />
                 </Suspense>
+                <ToastContainer 
+                  position="top-center"
+                  hideProgressBar
+                  newestOnTop={true}
+                  theme="colored"
+                />
+              </div>
+
                 : null
               }
           </div>
@@ -145,7 +161,7 @@ export default function Home() {
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600 sm:text-center">
                 Cultivate organized thoughts and never let your ideas wither away with our app. Grow and nurture your ideas together with our collaborative note taking app.
-                Connect your wallet to get started.
+                Connect your wallet to get started. 
               </p>
               
               {smartAccountAddress ?
@@ -153,7 +169,7 @@ export default function Home() {
                   {returningUser ? 
                   <div className="mt-8 flex gap-x-4 sm:justify-center">
                   <Link 
-                  href="/notes/note"
+                  href={`/user/${userID}`}
                   className="inline-block rounded-lg bg-emerald-600 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm ring-1 ring-emerald-600 hover:bg-emerald-700 hover:ring-emerald-700"
                   >
                     Launch App
@@ -169,7 +185,6 @@ export default function Home() {
                 </div> :
                 null
               }
-
             </div>
             <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">
               <svg

@@ -12,7 +12,7 @@ export default function Auth() {
     const [loading, setLoading] = useState(false)
     const smartAccountAddress = useNoteStore((state) => state.smartAccountAddress)
     const updateSmartAccount = useNoteStore((state) => state.updateSmartAccount)
-    
+
     useEffect(() => {
       let configureLogin
       if (interval) {
@@ -87,10 +87,10 @@ export default function Auth() {
         }
         {
           !!smartAccountAddress && (
-            <div >
+            <div className='max-w-xs'>
               <h3>Smart account address:</h3>
-              <p>{smartAccountAddress}</p>
-              <button  onClick={logout}>Logout</button>
+              <p className='truncate'>{smartAccountAddress}</p>
+              <button  onClick={logout} className='inline-flex w-auto justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-100'>Logout</button>
             </div>
           )
         }

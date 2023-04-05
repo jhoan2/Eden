@@ -6,35 +6,44 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link';
 import useIsMounted from '../hooks/useIsMounted'
 import CreateTableButton from '../components/CreateTableButton'
-import "@biconomy/web3-auth/dist/src/style.css"
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
+// import "@biconomy/web3-auth/dist/src/style.css"
+// import dynamic from "next/dynamic";
+// import { Suspense } from "react";
 import { useNoteStore } from '../components/store';
 import { Database } from "@tableland/sdk";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ConnectKitButton } from 'connectkit';
+import { useAccount } from "wagmi";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [returningUser, setReturningUser] = useState(false);
   const isMounted = useIsMounted();
-  const smartAccountAddress = useNoteStore((state) => state.smartAccountAddress);
   const userTableName = useNoteStore((state) => state.user.owned_table);
   const userID = useNoteStore((state) => state.user.id);
-  const updateUser = useNoteStore((state) => state.updateUser);
+  const { updateSmartAccount, updateUser, smartAccountAddress } = useNoteStore();
 
-  const SocialLoginDynamic = dynamic(
-    () => import("../components/Auth").then((res) => res.default),
-    {
-      ssr: false,
-    }
-  );
+  const { address, isConnected } = useAccount();
+
+  // const SocialLoginDynamic = dynamic(
+  //   () => import("../components/Auth").then((res) => res.default),
+  //   {
+  //     ssr: false,
+  //   }
+  // );
   
   const fetchReturningUser = async (smartAccountAddress) => {
     const db = Database.readOnly("maticmum");
     const { results } = await db.prepare(`SELECT * FROM icarus_80001_5720 WHERE pub_address='${smartAccountAddress}';`).all();
     return results
   }
+
+  useEffect(() => {
+    if (address) {
+      updateSmartAccount(address)
+    }
+  }, [isConnected])
 
   useEffect(() => {
     if (smartAccountAddress) {
@@ -100,9 +109,10 @@ export default function Home() {
           <div className="hidden lg:flex lg:min-w-0 lg:flex-1 lg:justify-end">
               {isMounted ? 
               <div>
-                <Suspense fallback={<div>Loading...</div>}>
+                <ConnectKitButton />
+                {/* <Suspense fallback={<div>Loading...</div>}>
                   <SocialLoginDynamic />
-                </Suspense>
+                </Suspense> */}
                 <ToastContainer 
                   position="top-center"
                   hideProgressBar
@@ -139,9 +149,10 @@ export default function Home() {
               <div className="-my-6 divide-y divide-gray-500/10">
                 <div className="py-6">
                 {isMounted ? 
-                <Suspense fallback={<div>Loading...</div>}>
-                  <SocialLoginDynamic />
-                </Suspense>
+                // <Suspense fallback={<div>Loading...</div>}>
+                //   <SocialLoginDynamic />
+                // </Suspense>
+                <ConnectKitButton />
                 : null
                 }
                 </div>

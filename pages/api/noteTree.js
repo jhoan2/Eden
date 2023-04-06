@@ -19,6 +19,7 @@ const wallet = new Wallet(privateKey);
 const provider = getDefaultProvider(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_MUMBAI_ID}`); 
 const signer = wallet.connect(provider);
 const db = new Database({ signer });
+
 const handler = async (req, res) => {
     switch (req.method) {
         case 'GET':
@@ -41,10 +42,11 @@ const handler = async (req, res) => {
             break;
         case 'POST':
           try{
-            const {userId, noteTree} = req.body
+            const obj = JSON.parse(req.body)
+            const { userId, noteTree } = obj
             const cid = await ipfs.dag.put(noteTree)
             const stringCid = cid.toString()
-            const data = db.prepare(`UPDATE icarus_80001_5720 SET note_tree_cid=?1 WHERE id=?2;`).bind(stringCid, userId).run();
+            const data = await db.prepare(`UPDATE icarus_80001_5720 SET note_tree_cid=?1 WHERE id=?2;`).bind(stringCid, userId).run();
             if(!data.success) return res.status(500).send(error)
             return res.status(200).json({success: true})
           } catch (error) {

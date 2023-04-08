@@ -11,43 +11,58 @@ export default function SideBarCommit() {
   let insertNotesArray = Array.from(insertNotes)
   let updateNotesArray = Array.from(updateNotes)
   const noteTreeObject = {userId: user.id, noteTree: noteTree}
+
   const commitNotes = async () => {
     setCommitting(true)
     let arr = []
     if(updateNotesArray.length > 0) {
       updateNotesArray.map((note) => {
-        arr.push(db.prepare(`UPDATE ${user.owned_table} SET content=?1, updated_at=BLOCK_NUM() WHERE id=?2;`).bind(note[1].cid, note[0]))
+        arr.push(db.prepare(`UPDATE ${user.owned_table} SET content=?1, updated_at=BLOCK_NUM() WHERE id=?2`).bind(note[1].cid, note[0]))
       })
     }
     if(insertNotesArray.length > 0)  {
       insertNotesArray.map((note) => {
-        arr.push(db.prepare(`INSERT INTO ${user.owned_table} (id, content, created_at, updated_at) VALUES (?1, ?2, BLOCK_NUM(), BLOCK_NUM());`).bind(note[0], note[1].cid))
+        arr.push(db.prepare(`INSERT INTO ${user.owned_table} (id, content, created_at, updated_at) VALUES (?1, ?2, BLOCK_NUM(), BLOCK_NUM())`).bind(note[0], note[1].cid))
       })
     }
-    const [data, isInTable] = await Promise.all([
-      await fetch(`http://localhost:3000/api/noteTree`, {
+    if(arr.length === 0) {
+      const data = await fetch(`http://localhost:3000/api/noteTree`, {
         method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(noteTreeObject)
-      }),
-      await db.batch(arr)
-    ])
-    if(data.status === 200) {
-      useNoteStore.setState((state) => ({
-        noteTreeChanged: false
-      }))
-    } else {
-      console.log('error: Could note update the note tree!')
+      })
+      if(data.status === 200) {
+        useNoteStore.setState((state) => ({
+          noteTreeChanged: false
+        }))
+      } else {
+        console.log('error: Could note update the note tree!')
+      }
     }
-    if(isInTable.success) {
-      useNoteStore.setState((state) => ({
-        insertNotes: new Map(),
-        updateNotes: new Map(),
-      }))
-    } else {
-      console.log('error: Could not commit notes!')
+    if (arr.length > 0) {
+      const data = db.batch(arr)
+      console.log(data)
+      // const [data, dbResponse] = await Promise.all([
+      //   await fetch(`http://localhost:3000/api/noteTree`, {
+      //     method: "POST",
+      //     body: JSON.stringify(noteTreeObject)
+      //   }),
+      //   await db.batch(arr)
+      // ])
+      // if(data.status === 200) {
+      //   useNoteStore.setState((state) => ({
+      //     noteTreeChanged: false
+      //   }))
+      // } else {
+      //   console.log('error: Could note update the note tree!')
+      // }
+      // if(dbResponse.success) {
+      //   useNoteStore.setState((state) => ({
+      //     insertNotes: new Map(),
+      //     updateNotes: new Map(),
+      //   }))
+      // } else {
+      //   console.log('error: Could not commit notes!')
+      // }
     }
     setCommitting(false)
   }

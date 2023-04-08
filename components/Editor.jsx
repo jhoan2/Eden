@@ -235,11 +235,12 @@ const Editor = ({data, noteId}) => {
     ],
     content: `${content}`,
   onUpdate: ({ editor}) => {
-    const id = noteId
     const json = editor.getJSON();
-    const title = json.content[0]?.content[0].text;
-    setContent({id: id, title: title, content: json})
-
+    const id = noteId
+    if(json.content[0].content) {
+      const title = json.content[0]?.content[0].text;
+      setContent({id: id, title: title, content: json})
+    }
   }
   })
 

@@ -1,52 +1,56 @@
-import React, { useState } from 'react';
+'use client'
+import React from 'react';
 import {
   SimpleTreeItemWrapper,
   SortableTree,
 } from 'dnd-kit-sortable-tree';
+import { useNoteStore } from '../store';
+import dynamic from 'next/dynamic';
 
-const initialViableMinimalData = [
-  {
-    id: '1',
-    value: 'Jane',
-    children: [
-      { id: '4', value: 'John' },
-      { id: '5', value: 'Sally' },
-    ],
-  },
-  { id: '2', value: 'Fred', children: [{ id: '6', value: 'Eugene' }] },
-  { id: '3', value: 'Helen', canHaveChildren: false },
-  { id: '7', value: 'Helen', canHaveChildren: false },
-  { id: '8', value: 'Helen', canHaveChildren: false },
-  { id: '9', value: 'Helen', canHaveChildren: false },
-  { id: '10', value: 'Helen', canHaveChildren: false },
-  { id: '11', value: 'Helen', canHaveChildren: false },
-  { id: '12', value: 'Helen', canHaveChildren: false },
-  { id: '13', value: 'Helen', canHaveChildren: false },
-  { id: '14', value: 'Helen', canHaveChildren: false },
-  { id: '15', value: 'Helen', canHaveChildren: false },
-  { id: '16', value: 'Helen', canHaveChildren: false },
-  { id: '17', value: 'Helen', canHaveChildren: false },
-];
-
+const CustomTreeItem = ({ item, showfoldernotes }) => {
+  return (
+      <div className='inline-flex w-full justify-center bg-white border text-clip text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2  focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-100'>
+        <button onClick={() => showfoldernotes(item)}>
+          {item.value}
+        </button>
+      </div>
+  );
+};
 
 const MinimalTreeItemComponent = React.forwardRef((props, ref) => (
-  <SimpleTreeItemWrapper {...props} ref={ref} disableCollapseOnItemClick>
-    <div className='inline-flex w-full justify-center  bg-white px-4 py-2 border text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2  focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-100'>
-      <button onClick={() => console.log('hello')}>
-        {props.item.value}
-      </button>
-    </div>
+  //I can get access to the id through props.item.id
+  //props.user or props.item.value
+  <SimpleTreeItemWrapper {...props} ref={ref} disableCollapseOnItemClick >
+      <CustomTreeItem item={props.item} showfoldernotes={props.showfoldernotes} />
   </SimpleTreeItemWrapper>
 ));
 
-export default function SideBarFolders() {
 
-  const [items, setItems] = useState(initialViableMinimalData);
+const setNoteTree = (items, noteTreeChanged, setNoteTreeChanged) => {
+  if(!noteTreeChanged) {setNoteTreeChanged()}
+  useNoteStore.setState({noteTree: items})
+}
+
+
+export default function SideBarFolders({setToggleNoteList}) {
+  const { noteTree, noteTreeChanged, setNoteTreeChanged, updateCurrentFolder } = useNoteStore();
+
+  const showfoldernotes = ({id, value}) => {
+    setToggleNoteList(false)
+    updateCurrentFolder({id: id, value: value})
+  }
+
   return (
-    <SortableTree
-      items={items}
-      onItemsChanged={setItems}
-      TreeItemComponent={MinimalTreeItemComponent}
-    />
+    <div>
+      {noteTree ? 
+        <SortableTree
+          items={noteTree}
+          onItemsChanged={(items) => setNoteTree(items, noteTreeChanged, setNoteTreeChanged)}
+          TreeItemComponent={MinimalTreeItemComponent}
+          showfoldernotes={showfoldernotes}
+          disableSorting={true}
+        />
+      : <div><p className='text-lg'>No notes yet.</p></div>}
+    </div>
   )
 }

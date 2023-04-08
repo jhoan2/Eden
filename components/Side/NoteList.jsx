@@ -8,7 +8,7 @@ import NoteListItem from './NoteListItem';
 export default function NoteList({toggleNoteList, setToggleNoteList}) {
     const { currentFolder, addNewNote, noteTree } = useNoteStore();
     // const isMounted = useIsMounted();
-
+    
     function getNotesForFolder(noteTree, folderId) {
         let notes = [];
       
@@ -27,6 +27,7 @@ export default function NoteList({toggleNoteList, setToggleNoteList}) {
         }
         return notes;
     }
+
     const notes = getNotesForFolder(noteTree, currentFolder.id);
 
     const addNote = () => {
@@ -63,7 +64,7 @@ export default function NoteList({toggleNoteList, setToggleNoteList}) {
                             New Note
                         </button>
                         {notes?.map((note) => {
-                            return <NoteListItem noteId={note.noteId} cid={note.cid} />
+                            return <NoteListItem noteId={note.id} cid={note.cid} />
                         })}
                     </div> :
                     <p className='text-xl font-bold dark:text-white'>Folder: </p>

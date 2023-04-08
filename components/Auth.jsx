@@ -4,13 +4,15 @@ import SocialLogin from '@biconomy/web3-auth'
 import { ethers } from 'ethers'
 import SmartAccount from '@biconomy/smart-account'
 import { ChainId } from '@biconomy/core-types'
+import { useNoteStore } from './store'
 
 export default function Auth() {
-    const [smartAccount, setSmartAccount] = useState(null)
     const [interval, enableInterval] = useState(false)
     const sdkRef = useRef(null)
     const [loading, setLoading] = useState(false)
-  
+    const smartAccountAddress = useNoteStore((state) => state.smartAccountAddress)
+    const updateSmartAccount = useNoteStore((state) => state.updateSmartAccount)
+
     useEffect(() => {
       let configureLogin
       if (interval) {
@@ -26,11 +28,11 @@ export default function Auth() {
     async function login() {
       if (!sdkRef.current) {
         const socialLoginSDK = new SocialLogin()
-        const signature1 = await socialLoginSDK.whitelistUrl('https://biconomy-social-auth.vercel.app')
+        const signature1 = await socialLoginSDK.whitelistUrl('http://localhost:3000/')
         await socialLoginSDK.init({
-          chainId: ethers.utils.hexValue(ChainId.POLYGON_MAINNET),
+          chainId: ethers.utils.hexValue(ChainId.POLYGON_MUMBAI),
           whitelistUrls: {
-            'https://biconomy-social-auth.vercel.app': signature1,
+            'http://localhost:3000/': signature1,
           }
         })
         sdkRef.current = socialLoginSDK
@@ -53,11 +55,11 @@ export default function Auth() {
       )
       try {
         const smartAccount = new SmartAccount(web3Provider, {
-          activeNetworkId: ChainId.POLYGON_MAINNET,
-          supportedNetworksIds: [ChainId.POLYGON_MAINNET],
+          activeNetworkId: ChainId.POLYGON_MUMBAI,
+          supportedNetworksIds: [ChainId.GOERLI, ChainId.POLYGON_MAINNET, ChainId.POLYGON_MUMBAI],
         })
         await smartAccount.init()
-        setSmartAccount(smartAccount)
+        updateSmartAccount(smartAccount.owner)
         setLoading(false)
       } catch (err) {
         console.log('error setting up smart account... ', err)
@@ -71,24 +73,24 @@ export default function Auth() {
       }
       await sdkRef.current.logout()
       sdkRef.current.hideWallet()
-      setSmartAccount(null)
+      updateSmartAccount(null)
       enableInterval(false)
     }
   
     return (
       <div >
         {
-          !smartAccount && !loading && <button onClick={login} className='inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-100'>Login</button>
+          !smartAccountAddress && !loading && <button onClick={login} className='inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-100'>Login</button>
         }
         {
           loading && <p>Loading account details...</p>
         }
         {
-          !!smartAccount && (
-            <div >
+          !!smartAccountAddress && (
+            <div className='max-w-xs'>
               <h3>Smart account address:</h3>
-              <p>{smartAccount.address}</p>
-              <button  onClick={logout}>Logout</button>
+              <p className='truncate'>{smartAccountAddress}</p>
+              <button  onClick={logout} className='inline-flex w-auto justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-100'>Logout</button>
             </div>
           )
         }

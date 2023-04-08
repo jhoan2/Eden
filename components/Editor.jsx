@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext } from 'react'
+import React, { useState } from 'react'
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -8,7 +8,6 @@ import Image from '@tiptap/extension-image'
 import UniqueID from '@tiptap-pro/extension-unique-id'
 import Highlight from '@tiptap/extension-highlight'
 import Youtube from '@tiptap/extension-youtube'
-import { AppContext } from './AppProvider'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
 import Subscript from '@tiptap/extension-subscript'
@@ -17,20 +16,200 @@ import EditorMenu from './EditorMenu'
 import EditorFloatingMenu from './EditorFloatingMenu'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import { lowlight } from "lowlight";
+import { Plugin } from '@tiptap/pm/state'
+import { Database } from "@tableland/sdk";
+import { useNoteStore } from './store'
+import { create } from 'ipfs-http-client'
+
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
+const projectSecret = process.env.NEXT_PUBLIC_PROJECT_SECRET;
+const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+const ipfs = create({
+  host: 'ipfs.infura.io',
+  port: 5001,
+  protocol: 'https',
+  apiPath: '/api/v0',
+  headers: {
+    authorization: auth,
+  }
+})
+
+const Editor = ({data, noteId}) => {
+  const [ content, setContent ] = useState(data);
+  const [ saving, setSaving ] = useState(false)
+  const { user } = useNoteStore();
+  const { owned_table: userTable } = user
+
+  if (!content || content.length === 0) {
+    setContent('<h1>Untitled...</h1>')
+  }
 
 
-const Editor = () => {
-  const { addToChangedNotes, allNotes, updateChangedNotes } = useContext(AppContext)
+  const checkIfInTable = async (id, userTable) => {
+    const db = Database.readOnly("maticmum");
+    const { results } = await db
+      .prepare(`SELECT * FROM ${userTable} WHERE id=?;`)
+      .bind(id)
+      .run();
+    if(results.length === 0) {
+      return false 
+    } else {
+      return true 
+    }
+  }
+
+  const addToUpdateNotes = ({id, cid}) => {
+    useNoteStore.setState((state) => ({
+      updateNotes: new Map(state.updateNotes).set(id, cid)
+    }))
+  }
+
+  const addToInsertNotes = ({id, cid}) => {
+    useNoteStore.setState((state) => ({
+      insertNotes: new Map(state.insertNotes).set(id, cid)
+    }))
+  }
+
+  const save = async (content) => {
+    
+    setSaving(true)
+    const { id, title } = content;
+    try {
+      const [data, isInTable] = await Promise.all([
+        await fetch(`http://localhost:3000/api/notesById/`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(content)
+        }),
+        checkIfInTable(id, userTable)
+      ])
+      let cid = await data.json()
+      cid.title = title
+      if(isInTable) {
+        addToUpdateNotes({id: id, cid: cid})
+      } else {
+        addToInsertNotes({id: id, cid: cid})
+      }
+    } catch (e) {
+      console.log({message: e})
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const CustomImage =  Image.extend({
+    addProseMirrorPlugins() {
+      return [
+        new Plugin({
+          props: {
+            handleDOMEvents: {
+              paste(view, event) {
+                const hasFiles =
+                  event.clipboardData &&
+                  event.clipboardData.files &&
+                  event.clipboardData.files.length
   
+                if (!hasFiles) {
+                  return
+                }
+  
+                const images = Array.from(
+                  event.clipboardData.files
+                ).filter(file => /image/i.test(file.type))
+  
+                if (images.length === 0) {
+                  return
+                }
+  
+                event.preventDefault()
+  
+                const { schema } = view.state
+  
+                images.forEach(image => {
+                  const reader = new FileReader()
+  
+                  reader.onload = () => {
+                    uploadImage(image).then(function(response) {
+                      const url = `https://icarus.infura-ipfs.io/ipfs/${response}`
+                      const node = schema.nodes.image.create({
+                        src: url
+                      })
+                      const transaction = view.state.tr.replaceSelectionWith(node)
+                      view.dispatch(transaction)
+                    })
+                  }
+                  reader.readAsDataURL(image)
+                })
+              }
+            }
+          }
+        })
+      ]
+    }
+  })
+
+  const handleImageDrop = (view, event, slice, moved) => {
+    if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { 
+      let file = event.dataTransfer.files[0]; 
+      let filesize = ((file.size/1024)/1024).toFixed(4); 
+      if ((file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/jpg") && filesize < 10) { 
+        // check the dimensions
+        let _URL = window.URL || window.webkitURL;
+        let img = document.createElement("img");
+        img.src = _URL.createObjectURL(file);
+        img.onload = function () {
+          if (this.width > 5000 || this.height > 5000) {
+            window.alert("Your images need to be less than 5000 pixels in height and width."); // display alert
+          } else {
+            uploadImage(file).then(function(response) { 
+                // place the now uploaded image in the editor where it was dropped
+                const url = `https://icarus.infura-ipfs.io/ipfs/${response}`
+                let image = document.createElement("img");
+                image.src = url;
+                image.onload = function () {
+                  const { schema } = view.state;
+                  const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+                  const node = schema.nodes.image.create({ src: url }); // creates the image element
+                  const transaction = view.state.tr.insert(coordinates.pos, node); // places it in the correct position
+                  return view.dispatch(transaction);
+                }
+            }).catch(function(error) {
+              if (error) {
+                console.log({err: error})
+                window.alert("There was a problem uploading your image, please try again.");
+              }
+            });
+          }
+        };
+      } else {
+        window.alert("Images need to be in jpg or png format and less than 10mb in size.");
+      }
+      return true; // handled
+    }
+    return false; // not handled use default behaviour
+  }
+
+  const uploadImage = async (file) => {
+    try {
+      const cid = await ipfs.add(file)
+      return cid?.path
+    } catch (e) {
+      console.log({message: e})
+    }
+  };
+
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mt-20 ml-10 dark:prose-invert w-screen h-screen focus:outline-none prose-img:rounded-xl ',
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mt-20 ml-10 dark:prose-invert w-screen h-screen focus:outline-none prose-img:rounded-xl',
       },
+      handleDrop: handleImageDrop,
     },
     extensions: [
       StarterKit.configure({
-        CodeBlock: false,
+        codeBlock: false,
       }),
       UniqueID.configure({
         types: ['heading', 'paragraph'],
@@ -41,7 +220,7 @@ const Editor = () => {
           class: 'bg-emerald-200'
         }
       }),
-      Image,
+      CustomImage,
       Youtube,
       Link,
       Underline,
@@ -50,57 +229,29 @@ const Editor = () => {
       CodeBlockLowlight.configure({
         lowlight,
       }),
+      Placeholder.configure({
+        placeholder: 'Untitled...',
+      })
     ],
-    content: `
-    <h1>Untitled...</h1>
-    <hr />
-    <p>
-          Thats a boring paragraph followed by a fenced code block:
-        </p>
-        <pre><code class="language-javascript">for (var i=1; i <= 20; i++)
-{
-  if (i % 15 == 0)
-    console.log("FizzBuzz");
-  else if (i % 3 == 0)
-    console.log("Fizz");
-  else if (i % 5 == 0)
-    console.log("Buzz");
-  else
-    console.log(i);
-}</code></pre>
-        <p>
-          Press Command/Ctrl + Enter to leave the fenced code block and continue typing in boring paragraphs.
-        </p>
-    `,
+    content: `${content}`,
   onUpdate: ({ editor}) => {
     const json = editor.getJSON();
-    console.log(json)
-    const id = json.content[0].attrs.id;
-    const title = json.content[0].content[0].text;
-    //if the hashmap has the note then update it else add it. 
-    if(allNotes.has(id)) {
-      // update it
-      updateChangedNotes({id: id, changedNotes: json})
-    } else {
-      allNotes.set(id, title)
-      addToChangedNotes({id: id, changedNotes: json})
+    const id = noteId
+    if(json.content[0].content) {
+      const title = json.content[0]?.content[0].text;
+      setContent({id: id, title: title, content: json})
     }
-    // const note = formatJSON(json)
-    //format the json into an object,.
-    //addToChangedNotes(json)
-    //changedNote: [{}, {}]
   }
   })
 
   if (!editor) {
     return null
   }
-//const json = editor.getJSON();
 
   return (
     <div>
 
-    <EditorMenu editor={editor}/>
+    <EditorMenu editor={editor} save={save} content={content} saving={saving} />
     {editor && <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} >
         <EditorFloatingMenu editor={editor} />
       </BubbleMenu>}

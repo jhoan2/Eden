@@ -21,12 +21,13 @@ export default function DeleteNoteList({noteId, cid}) {
             Some text that will need to be set some kind of limit upond
         </p>
         {confirmDelete ? 
-            <button onClick={() => deleteNoteInFolder()} className='inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800'>
-                Confirm
-            </button> :
             <button onClick={() => setConfirmDelete(true)} className='inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800'>
                 Delete
             </button> 
+            :
+            <button onClick={() => deleteNoteInFolder()} className='inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-blue-800'>
+                Confirm
+            </button>
         }
         
     </div>

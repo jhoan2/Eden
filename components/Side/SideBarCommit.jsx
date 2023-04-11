@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Database } from "@tableland/sdk";
 
 export default function SideBarCommit() {
-  const { noteTreeChanged, insertNotes, updateNotes, user, noteTree } = useNoteStore();
+  const { noteTreeChanged, insertNotes, updateNotes, user, noteTree, deleteNotes } = useNoteStore();
   const [ committing, setCommitting ] = useState(false)
   const db = new Database();
   let insertNotesArray = Array.from(insertNotes)
@@ -23,6 +23,11 @@ export default function SideBarCommit() {
     if(insertNotesArray.length > 0)  {
       insertNotesArray.map((note) => {
         arr.push(db.prepare(`INSERT INTO ${user.owned_table} (id, content, created_at, updated_at) VALUES (?1, ?2, BLOCK_NUM(), BLOCK_NUM())`).bind(note[0], note[1].cid))
+      })
+    }
+    if(deleteNotes.length > 0) {
+      deleteNotes.map((note) => {
+        arr.push(db.prepare(`DELETE FROM ${user.owned_table} WHERE id=?1`).bind(note))
       })
     }
     if(arr.length === 0) {

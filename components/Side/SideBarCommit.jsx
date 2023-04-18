@@ -11,7 +11,7 @@ export default function SideBarCommit() {
   let insertNotesArray = Array.from(insertNotes)
   let updateNotesArray = Array.from(updateNotes)
   const noteTreeObject = {userId: user.id, noteTree: noteTree}
-
+  console.log(deleteNotes)
   const commitNotes = async () => {
     setCommitting(true)
     let arr = []
@@ -44,30 +44,29 @@ export default function SideBarCommit() {
       }
     }
     if (arr.length > 0) {
-      const data = db.batch(arr)
-      console.log(data)
-      // const [data, dbResponse] = await Promise.all([
-      //   await fetch(`http://localhost:3000/api/noteTree`, {
-      //     method: "POST",
-      //     body: JSON.stringify(noteTreeObject)
-      //   }),
-      //   await db.batch(arr)
-      // ])
-      // if(data.status === 200) {
-      //   useNoteStore.setState((state) => ({
-      //     noteTreeChanged: false
-      //   }))
-      // } else {
-      //   console.log('error: Could note update the note tree!')
-      // }
-      // if(dbResponse.success) {
-      //   useNoteStore.setState((state) => ({
-      //     insertNotes: new Map(),
-      //     updateNotes: new Map(),
-      //   }))
-      // } else {
-      //   console.log('error: Could not commit notes!')
-      // }
+      const [data, dbResponse] = await Promise.all([
+        await fetch(`http://localhost:3000/api/noteTree`, {
+          method: "POST",
+          body: JSON.stringify(noteTreeObject)
+        }),
+        await db.batch(arr)
+      ])
+      if(data.status === 200) {
+        useNoteStore.setState((state) => ({
+          noteTreeChanged: false
+        }))
+      } else {
+        console.log('error: Could note update the note tree!')
+      }
+      if(dbResponse[0].success) {
+        useNoteStore.setState((state) => ({
+          insertNotes: new Map(),
+          updateNotes: new Map(),
+          deleteNotes: []
+        }))
+      } else {
+        console.log('error: Could not commit notes!')
+      }
     }
     setCommitting(false)
   }
@@ -108,6 +107,16 @@ export default function SideBarCommit() {
             {note[1].title}
           </p>
         </Link>)
+        }) :
+        null
+        }
+        { deleteNotes ?
+        deleteNotes.map((note) => {
+          return   ( <div className="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:text-emerald-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+          <p className="mb-2 truncate text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {note[1].title}
+          </p>
+        </div>)
         }) :
         null
         }

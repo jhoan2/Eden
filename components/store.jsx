@@ -44,7 +44,7 @@ export const useNoteStore = create(
       };
       state.noteTree.forEach(findNodeById);
     })),
-    updateNote: ({id, cid}) => set(produce((state) => {
+    updateNoteInFolder: ({id, cid}) => set(produce((state) => {
       const note = {id: id, cid: cid};
       //right now I'm thinking about using the deletefunction to write this one 
       const findAndRemoveNodeById = (nodes) => {

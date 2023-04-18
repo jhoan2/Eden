@@ -1,4 +1,4 @@
-import { create } from 'ipfs-http-client'
+import { create, CID } from 'ipfs-http-client'
 import { Database } from "@tableland/sdk";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
@@ -18,19 +18,17 @@ const handler = async (req, res) => {
     switch (req.method) {
         case 'GET':
           try {
-            const { noteCid, path } = req.query
-            if(!noteCid) return res.status(200).json([])
-            if(path) {
-              const data = await ipfs.dag.get(noteCid, { path })
+            const { noteCid } = req.query
+            const cid = CID.parse(noteCid);
+            if(noteCid) {
+              const data = await ipfs.dag.get(cid)
               return res.status(200).json(data)
             } else {  
-              const data = await ipfs.dag.get(noteCid)
-              return res.status(200).json(data)
+              return res.status(200).json([])
             }
           } catch (error) {
             return res.status(500).send(error)
           }
-            break;
         case 'POST':
           try {
             const cid = await ipfs.dag.put(req.body)

@@ -34,16 +34,11 @@ const ipfs = create({
   }
 })
 
-const Editor = ({data, noteId}) => {
-  const [ content, setContent ] = useState(data);
+const Editor = ({noteId, value, setContent }) => {
   const [ saving, setSaving ] = useState(false)
-  const { user } = useNoteStore();
+  const { user, updateNoteInFolder, setNoteTreeChanged } = useNoteStore();
   const { owned_table: userTable } = user
-
-  if (!content || content.length === 0) {
-    setContent('<h1>Untitled...</h1>')
-  }
-
+  let content = value.content
 
   const checkIfInTable = async (id, userTable) => {
     const db = Database.readOnly("maticmum");
@@ -70,10 +65,9 @@ const Editor = ({data, noteId}) => {
     }))
   }
 
-  const save = async (content) => {
-    
+  const save = async (contentToSave) => {
     setSaving(true)
-    const { id, title } = content;
+    const { id, title } = contentToSave;
     try {
       const [data, isInTable] = await Promise.all([
         await fetch(`http://localhost:3000/api/notesById/`, {
@@ -81,7 +75,7 @@ const Editor = ({data, noteId}) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(content)
+          body: JSON.stringify(contentToSave)
         }),
         checkIfInTable(id, userTable)
       ])
@@ -92,6 +86,8 @@ const Editor = ({data, noteId}) => {
       } else {
         addToInsertNotes({id: id, cid: cid})
       }
+      updateNoteInFolder({id: id, cid: cid})
+      setNoteTreeChanged()
     } catch (e) {
       console.log({message: e})
     } finally {
@@ -233,16 +229,17 @@ const Editor = ({data, noteId}) => {
         placeholder: 'Untitled...',
       })
     ],
-    content: `${content}`,
+    content: content,
   onUpdate: ({ editor}) => {
     const json = editor.getJSON();
     const id = noteId
-    if(json.content[0].content) {
+    if(json?.content[1]?.content) {
       const title = json.content[0]?.content[0].text;
       setContent({id: id, title: title, content: json})
     }
   }
   })
+
 
   if (!editor) {
     return null
@@ -250,8 +247,7 @@ const Editor = ({data, noteId}) => {
 
   return (
     <div>
-
-    <EditorMenu editor={editor} save={save} content={content} saving={saving} />
+    <EditorMenu editor={editor} save={save} saving={saving} value={value} />
     {editor && <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} >
         <EditorFloatingMenu editor={editor} />
       </BubbleMenu>}

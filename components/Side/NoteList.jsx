@@ -6,7 +6,7 @@ import NoteListItem from './NoteListItem';
 import DeleteNoteListItem from './DeleteNoteListItem';
 // import import useIsMounted from '../hooks/useIsMounted'
 
-export default function NoteList({toggleNoteList, setToggleNoteList}) {
+export default function NoteList({toggleNoteList, setToggleNoteList, setContent}) {
     const { currentFolder, addNewNote, noteTree } = useNoteStore();
     const [ deleteView, setDeleteView ] = useState(false)
     // const isMounted = useIsMounted();
@@ -90,7 +90,7 @@ export default function NoteList({toggleNoteList, setToggleNoteList}) {
                                     </button>
                                 </div>
                                 {notes?.map((note) => {
-                                    return <NoteListItem noteId={note.id} cid={note.cid} />
+                                    return <NoteListItem noteId={note.id} cid={note.cid} setContent={setContent} />
                                 })}
                             </div>
                         }

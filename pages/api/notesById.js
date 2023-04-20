@@ -1,5 +1,4 @@
 import { create, CID } from 'ipfs-http-client'
-import { Database } from "@tableland/sdk";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 const projectSecret = process.env.NEXT_PUBLIC_PROJECT_SECRET;

@@ -11,7 +11,7 @@ export default function SideBarCommit() {
   let insertNotesArray = Array.from(insertNotes)
   let updateNotesArray = Array.from(updateNotes)
   const noteTreeObject = {userId: user.id, noteTree: noteTree}
-  console.log(deleteNotes)
+
   const commitNotes = async () => {
     setCommitting(true)
     let arr = []

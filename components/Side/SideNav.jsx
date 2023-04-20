@@ -16,7 +16,7 @@ export default function SideNav() {
   return (
     <div className='flex'>
         <div className='flex flex-col justify-between h-screen  lg:w-16 md:w-12 shadow-md bg-emerald-600  text-white'>
-            <div >
+            <div>
                 <ul>
                     <li className='p-2 hover:bg-emerald-700 hover:ring-emerald-700 ' title='homepage'>
                         <Link href='/'>
@@ -73,7 +73,9 @@ export default function SideNav() {
             <SideBar sideBarView={sideBarView} setSideBarView={setSideBarView} setToggleNoteList={setToggleNoteList} />
         </div>
         <NoteList toggleNoteList={toggleNoteList} setToggleNoteList={setToggleNoteList} setContent={setContent}/>
-        {content ? <Editor value={content} setContent={setContent} /> : null}
+        <div className='flex overflow-y-auto justify-center w-full items-center'>
+            {content ? <Editor value={content} setContent={setContent} /> : null}
+        </div>
     </div>
       )
     }

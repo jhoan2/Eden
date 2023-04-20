@@ -251,7 +251,7 @@ const Editor = ({noteId, value, setContent }) => {
     {editor && <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} >
         <EditorFloatingMenu editor={editor} />
       </BubbleMenu>}
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} className='shadow-lg' />
     </div>
 
   )

@@ -46,7 +46,6 @@ export const useNoteStore = create(
     })),
     updateNoteInFolder: ({id, cid}) => set(produce((state) => {
       const note = {id: id, cid: cid};
-      //right now I'm thinking about using the deletefunction to write this one 
       const findAndRemoveNodeById = (nodes) => {
         for (let i = 0; i < nodes.length; i++) {
           const node = nodes[i];
@@ -73,7 +72,7 @@ export const useNoteStore = create(
       const findAndRemoveNodeById = (nodes) => {
         for (let i = 0; i < nodes.length; i++) {
           const node = nodes[i];
-          if (node.id === id || !node.id) {
+          if (node.id === id) {
             nodes.splice(i, 1);
             return true; 
           } else {

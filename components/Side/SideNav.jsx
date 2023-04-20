@@ -4,11 +4,13 @@ import React, { useState } from 'react'
 import SideBar from './SideBar'
 import NoteList from './NoteList'
 import { useNoteStore } from '../store'
-
+import Editor from '../Editor'
 export default function SideNav() {
   const [sideBarView, setSideBarView] = useState(true);
   const [ toggleNoteList, setToggleNoteList ] = useState(true);
   const { noteTreeChanged } = useNoteStore();
+  const [ content, setContent ] = useState('')
+
   return (
     <div className='flex'>
         <div className='flex flex-col justify-between h-screen  lg:w-16 md:w-12 shadow-md bg-emerald-600  text-white'>
@@ -72,7 +74,8 @@ export default function SideNav() {
         <div >
             <SideBar sideBarView={sideBarView} setSideBarView={setSideBarView} setToggleNoteList={setToggleNoteList} />
         </div>
-        <NoteList toggleNoteList={toggleNoteList} setToggleNoteList={setToggleNoteList} />
+        <NoteList toggleNoteList={toggleNoteList} setToggleNoteList={setToggleNoteList} setContent={setContent}/>
+        {content ? <Editor value={content} setContent={setContent} /> : null}
     </div>
       )
     }

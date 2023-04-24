@@ -7,6 +7,9 @@ export default async function NoteLayout({ children }) {
                 <div className="w-full">
                     <SideNav />
                 </div>
+                <div>
+                    {children}
+                </div>
         </section>
     );
   }

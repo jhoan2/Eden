@@ -36,7 +36,7 @@ export default function NoteListItem({noteId, cid, setContent}) {
   return (
     <div>
       { cid ?
-          <button className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700" onClick={() => setContent(data.value)}>
+          <button className="text-left text-ellipsis overflow-hidden max-h-52 w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700" onClick={() => setContent(data.value)}>
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               {title}
             </h5>
@@ -45,7 +45,7 @@ export default function NoteListItem({noteId, cid, setContent}) {
             </p>
           </button>
           :
-          <button className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700" onClick={() => setContent({id: noteId, title: 'Untitled..', content: '<h1>Untitled..</h1>'})}>
+          <button className="text-left text-ellipsis overflow-hidden max-h-52 w-full max-w-sm p-6  bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700" onClick={() => setContent({id: noteId, title: 'Untitled..', content: '<h1>Untitled..</h1>'})}>
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               Untitled
             </h5>

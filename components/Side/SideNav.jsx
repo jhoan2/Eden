@@ -6,12 +6,17 @@ import NoteList from './NoteList'
 import { useNoteStore } from '../store'
 import Editor from '../Editor'
 import { Avatar } from 'connectkit'
+import { useRouter } from 'next/navigation';
 
 export default function SideNav() {
   const [sideBarView, setSideBarView] = useState(true);
   const [ toggleNoteList, setToggleNoteList ] = useState(true);
   const { noteTreeChanged, smartAccountAddress } = useNoteStore();
   const [ content, setContent ] = useState('')
+  const router = useRouter()
+  if(!smartAccountAddress) {
+    router.push('/')
+  }
 
   return (
     <div className='flex'>
@@ -72,7 +77,7 @@ export default function SideNav() {
         <div >
             <SideBar sideBarView={sideBarView} setSideBarView={setSideBarView} setToggleNoteList={setToggleNoteList} />
         </div>
-        <NoteList toggleNoteList={toggleNoteList} setToggleNoteList={setToggleNoteList} setContent={setContent}/>
+        { smartAccountAddress ? <NoteList toggleNoteList={toggleNoteList} setToggleNoteList={setToggleNoteList} setContent={setContent}/> : null }
         <div className='flex overflow-y-auto justify-center w-full items-center'>
             {content ? <Editor value={content} setContent={setContent} /> : null}
         </div>

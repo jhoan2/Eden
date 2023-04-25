@@ -37,7 +37,6 @@ const handler = async (req, res) => {
         case 'GET':
           try {
             const { userTable } = req.query
-            console.log(userTable)
             const db = Database.readOnly("maticmum");
             const data = await db
               .prepare(`SELECT content,id FROM ${userTable};`)

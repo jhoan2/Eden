@@ -44,6 +44,24 @@ export const useNoteStore = create(
       };
       state.noteTree.forEach(findNodeById);
     })),
+    deleteFolderById: (folderId) => set(produce((state) => {
+      const findAndRemoveNodeById = (nodes) => {
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          if (node.id === folderId) {
+            nodes.splice(i, 1);
+            return true; 
+          } else {
+            if (node.children) {
+              const foundAndRemoved = findAndRemoveNodeById(node.children);
+              if (foundAndRemoved) return true; 
+            }
+          }
+        }
+        return false; 
+      };
+      findAndRemoveNodeById(state.noteTree);
+    })),
     updateNoteInFolder: ({id, cid}) => set(produce((state) => {
       const note = {id: id, cid: cid};
       const findAndRemoveNodeById = (nodes) => {

@@ -41,7 +41,7 @@ const Editor = ({noteId, value, setContent }) => {
   let content = value.content
 
   const checkIfInTable = async (id, userTable) => {
-    const db = Database.readOnly("maticmum");
+    const db = new Database();
     const { results } = await db
       .prepare(`SELECT * FROM ${userTable} WHERE id=?;`)
       .bind(id)
@@ -68,6 +68,7 @@ const Editor = ({noteId, value, setContent }) => {
   const save = async (contentToSave) => {
     setSaving(true)
     const { id, title } = contentToSave;
+
     try {
       const [data, isInTable] = await Promise.all([
         await fetch(`http://localhost:3000/api/notesById/`, {

@@ -40,7 +40,7 @@ export default function SideNav() {
                         </button>
                     </li>
                     <li className='p-2 hover:bg-emerald-700 hover:ring-emerald-700' title='commit page'>
-                        { noteTreeChanged ? <span class="flex w-3 h-3 absolute bg-red-500 rounded-full"></span> : null }
+                        { noteTreeChanged ? <span className="flex w-3 h-3 absolute bg-red-500 rounded-full"></span> : null }
                         <button onClick={() => setSideBarView(false)}>
                             <span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12">
@@ -79,7 +79,7 @@ export default function SideNav() {
         </div>
         { smartAccountAddress ? <NoteList toggleNoteList={toggleNoteList} setToggleNoteList={setToggleNoteList} setContent={setContent}/> : null }
         <div className='flex overflow-y-auto justify-center w-full items-center'>
-            {content ? <Editor value={content} setContent={setContent} /> : null}
+            {content ? <Editor noteId={content.id} value={content} setContent={setContent} /> : null}
         </div>
     </div>
       )

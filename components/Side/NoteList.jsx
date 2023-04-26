@@ -73,7 +73,7 @@ export default function NoteList({toggleNoteList, setToggleNoteList, setContent}
                                     </button>
                                 </div>
                                 {notes?.map((note) => {
-                                    return <DeleteNoteListItem noteId={note.id} cid={note.cid} />
+                                    return <DeleteNoteListItem key={note.id} noteId={note.id} cid={note.cid} />
                                 })}
                             </div>
                             :
@@ -90,7 +90,7 @@ export default function NoteList({toggleNoteList, setToggleNoteList, setContent}
                                     </button>
                                 </div>
                                 {notes?.map((note) => {
-                                    return <NoteListItem noteId={note.id} cid={note.cid} setContent={setContent} />
+                                    return <NoteListItem key={note.id} noteId={note.id} cid={note.cid} setContent={setContent} />
                                 })}
                             </div>
                         }

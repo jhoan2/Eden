@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useNoteStore } from '../store'
 import Link from "next/link"
 import { Database } from "@tableland/sdk";
+import { useRouter } from 'next/navigation';
 
 export default function SideBarCommit() {
   const { noteTreeChanged, insertNotes, updateNotes, user, noteTree, deleteNotes } = useNoteStore();
@@ -11,6 +12,7 @@ export default function SideBarCommit() {
   let insertNotesArray = Array.from(insertNotes)
   let updateNotesArray = Array.from(updateNotes)
   const noteTreeObject = {userId: user.id, noteTree: noteTree}
+  const router = useRouter()
 
   const commitNotes = async () => {
     setCommitting(true)
@@ -64,6 +66,7 @@ export default function SideBarCommit() {
           updateNotes: new Map(),
           deleteNotes: []
         }))
+        router.refresh()
       } else {
         console.log('error: Could not commit notes!')
       }

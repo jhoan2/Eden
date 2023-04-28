@@ -1,14 +1,17 @@
 'use client'
-import React, { useState } from 'react'
-import { useNoteStore } from '../store'
+import React, { useState } from 'react';
+import { useNoteStore } from '../store';
 import { v4 as uuidv4 } from 'uuid';
 import NoteListItem from './NoteListItem';
 import DeleteNoteListItem from './DeleteNoteListItem';
+import { useQueries } from 'react-query';
+import LoadingSpinner from '../LoadingSpinner';
 // import import useIsMounted from '../hooks/useIsMounted'
 
 export default function NoteList({toggleNoteList, setToggleNoteList, setContent}) {
     const { currentFolder, addNewNote, noteTree } = useNoteStore();
     const [ deleteView, setDeleteView ] = useState(false)
+    const [ loading, setLoading ] = useState(false);
     // const isMounted = useIsMounted();
     function getNotesForFolder(noteTree, folderId) {
         let notes = [];
@@ -29,16 +32,40 @@ export default function NoteList({toggleNoteList, setToggleNoteList, setContent}
         return notes;
     }
 
-
-
     const notes = getNotesForFolder(noteTree, currentFolder.id);
+
+    const fetchNoteById = async (noteCid, noteId) => {
+        setLoading(true)
+        if(!noteCid) return {noteId: noteId}
+        const response =  await fetch(`http://localhost:3000/api/notesById/?noteCid=${noteCid}`, {method: "GET"})
+        if(!response.ok) {
+            throw new Error('Could not retrieve notes')
+        }
+        let dataResponse = await response.json()
+        dataResponse.noteId = noteId
+        dataResponse.noteCid = noteCid
+        return dataResponse
+    }
+
+    const noteQueries = useQueries(
+        notes.map((note) => {
+          return {
+            queryKey: ['noteById', note.id],
+            queryFn: () => fetchNoteById(note.cid.cid, note.id),
+          }
+        }),
+      )
 
     const addNote = () => {
         const noteId = uuidv4();
         const noteObject = {"folderId": currentFolder.id, "noteId": noteId, cid: ""}
         addNewNote(noteObject)
     }
-    
+
+    if(noteQueries[noteQueries.length - 1]?.isFetching) {
+        return <LoadingSpinner />
+    }
+
     return (
      <div>
         <div>
@@ -60,7 +87,7 @@ export default function NoteList({toggleNoteList, setToggleNoteList, setContent}
                         </button>
                     </span>            
                 </div>
-                {currentFolder.id ? 
+                {noteQueries ? 
                     <div>
                         {deleteView ?
                             <div className='flex-col p-2 content-end overflow-y-auto space-y-2'>
@@ -72,9 +99,9 @@ export default function NoteList({toggleNoteList, setToggleNoteList, setContent}
                                         </svg>
                                     </button>
                                 </div>
-                                {notes?.map((note) => {
-                                    return <DeleteNoteListItem key={note.id} noteId={note.id} cid={note.cid} />
-                                })}
+                                {noteQueries?.map((note) => {
+                                    return <DeleteNoteListItem key={note.data?.noteId} noteId={note.data?.noteId} cid={note.noteCid} data={note.data} />
+                                })} 
                             </div>
                             :
                             <div className='flex-col content-end p-2 overflow-y-auto space-y-2'>
@@ -89,8 +116,8 @@ export default function NoteList({toggleNoteList, setToggleNoteList, setContent}
                                         </svg>
                                     </button>
                                 </div>
-                                {notes?.map((note) => {
-                                    return <NoteListItem key={note.id} noteId={note.id} cid={note.cid} setContent={setContent} />
+                                {noteQueries?.map((note) => {
+                                    return <NoteListItem key={note.data?.noteId} data={note.data} setContent={setContent} />
                                 })}
                             </div>
                         }

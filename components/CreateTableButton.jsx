@@ -21,6 +21,7 @@ export default function CreateTableButton() {
     return 
   }
 
+  const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const handleClick = async (smartAccountAddress) => {
     setLoading(true);
@@ -37,15 +38,18 @@ export default function CreateTableButton() {
     } catch (e) {
       console.log({message: e})
     }
+    await delay(3000) // wait 3s for it to settle on blockchain
     setLoading(false)
   }
 
   const insertInDevTable = async () => {
+    setLoading(true);
     if (!userTableName) {
       toast.error('Your table does not exist!')
+      setLoading(false)
       return
     }
-    const insert = await db.prepare(`INSERT INTO icarus_80001_5720 (pub_address, owned_table, note_tree_cid) VALUES (?, ?, ?)`).bind(smartAccountAddress, userTableName, '').run()
+    const insert = await db.prepare(`INSERT INTO icarus_80001_5937 (pub_address, owned_table, note_tree_cid) VALUES (?, ?, ?)`).bind(smartAccountAddress, userTableName, '').run()
 
     if(!insert.success) {
         toast.error('Could not insert')
@@ -53,7 +57,8 @@ export default function CreateTableButton() {
         toast.success('Was able to insert, go ahead and launch app')
         window.location.reload()
       }
-      return
+    setLoading(false)
+    return
   }
 
 
@@ -77,7 +82,7 @@ export default function CreateTableButton() {
               onClick={() => insertInDevTable()}
               className="inline-block rounded-lg px-4 py-1.5 text-base font-semibold leading-7 text-gray-900 ring-1 ring-gray-900/10 hover:ring-gray-900/20"
               >
-                Insert into Dev table
+                Join the Community
               </button>
             }
           </div>

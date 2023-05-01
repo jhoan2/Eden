@@ -6,7 +6,7 @@ const wallet = new Wallet(privateKey);
 const provider = getDefaultProvider(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_MUMBAI_ID}`); 
 const signer = wallet.connect(provider);
 const db = new Database({ signer });
-const devTable = 'icarus_80001_5720';
+const devTable = 'icarus_80001_5937';
 
 const handler = async (req, res) => {
     switch (req.method) {

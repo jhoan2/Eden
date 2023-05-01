@@ -16,7 +16,7 @@ export default function NoteList({toggleNoteList, setToggleNoteList, setContent}
     function getNotesForFolder(noteTree, folderId) {
         let notes = [];
       
-        for (let i = 0; i < noteTree.length; i++) {
+        for (let i = 0; i < noteTree?.length; i++) {
           const node = noteTree[i];
       
           if (node.id === folderId) {

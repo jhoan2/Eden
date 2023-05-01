@@ -20,7 +20,6 @@ const ipfs = create({
 //     try { 
 //       const res = await ipfs.dag.put(json)
 //       console.log(res.toString())
-      
 //       console.log(res)
 //       return 
 //     } catch (err) {
@@ -37,7 +36,7 @@ const handler = async (req, res) => {
         case 'GET':
           try {
             const { userTable } = req.query
-            const db = Database.readOnly("maticmum");
+            const db = new Database();
             const data = await db
               .prepare(`SELECT content,id FROM ${userTable};`)
               .raw();

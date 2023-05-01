@@ -25,7 +25,7 @@ const handler = async (req, res) => {
         case 'GET':
           try {
             const id = req.query.id
-            const query = `SELECT * FROM icarus_80001_5720 WHERE id=${id}`;
+            const query = `SELECT * FROM icarus_80001_5937 WHERE id=${id}`;
             const encodedQuery = encodeURIComponent(query);
             const encodeAsterisk = encodedQuery.replace(/\*/g, '%2A');
             const data = await fetch(`https://testnets.tableland.network/api/v1/query?statement=${encodeAsterisk}`)
@@ -46,7 +46,7 @@ const handler = async (req, res) => {
             const { userId, noteTree } = obj
             const cid = await ipfs.dag.put(noteTree)
             const stringCid = cid.toString()
-            const data = await db.prepare(`UPDATE icarus_80001_5720 SET note_tree_cid=?1 WHERE id=?2;`).bind(stringCid, userId).run();
+            const data = await db.prepare(`UPDATE icarus_80001_5937 SET note_tree_cid=?1 WHERE id=?2;`).bind(stringCid, userId).run();
             if(!data.success) return res.status(500).send(error)
             return res.status(200).json({success: true})
           } catch (error) {

@@ -32,7 +32,7 @@ export default function Home() {
   
   const fetchReturningUser = async (smartAccountAddress) => {
     const db = Database.readOnly("maticmum");
-    const { results } = await db.prepare(`SELECT * FROM icarus_80001_5720 WHERE pub_address='${smartAccountAddress}';`).all();
+    const { results } = await db.prepare(`SELECT * FROM icarus_80001_5937 WHERE pub_address='${smartAccountAddress}';`).all();
     return results
   }
 

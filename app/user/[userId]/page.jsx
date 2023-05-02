@@ -4,8 +4,11 @@ import { redirect } from 'next/navigation';
 
 const getNoteTree = async ({userId}) => {
   const data = await fetch(`http://localhost:3000/api/noteTree?id=${userId}`, {method: "GET"})
-  if (!data.ok) return undefined
-  return data.json();
+  const { noteTree } = await data.json()
+  if (!data.ok) {
+    throw new Error('Could not retrieve note tree')
+  }
+  return noteTree
 }
 
 
@@ -14,8 +17,8 @@ export default async function NoteTreePage({params}) {
   if(!userId) {
     redirect('/')
   }
-  const { value } = await getNoteTree({userId})
-  const noteTree = value
+
+  const noteTree = await getNoteTree({userId})
   useNoteStore.setState({noteTree: noteTree})
 
   return(

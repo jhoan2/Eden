@@ -63,7 +63,7 @@ export default function SideBarFolders({setToggleNoteList, deleteFolders}) {
 
   return (
     <div>
-      {noteTree ? 
+      {noteTree.length > 0 ? 
         <div>
           { deleteFolders ?
             <SortableTree
@@ -82,7 +82,16 @@ export default function SideBarFolders({setToggleNoteList, deleteFolders}) {
             /> 
           }
         </div>
-      : <div><p className='text-lg'>No notes yet.</p></div>}
+      : <div>
+          <p className='text-lg'>No notes yet.</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">1. Take notes </h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">2. Save</h3>
+          <p className='mb-4 text-base font-normal text-gray-500 dark:text-gray-400'>The green save button will be in the editor. Click once you are done making your edits.</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">3. Commit</h3>
+          <p className='mb-4 text-base font-normal text-gray-500 dark:text-gray-400'>Committing requires your signature, and it is the second tab on the left side bar.</p>
+          <p className='mb-4 text-base font-medium text-red-500 dark:text-gray-400'>Committing makes your notes public so don't commit information you don't want public such as personal information</p>
+        </div>
+      }
     </div>
   )
 }

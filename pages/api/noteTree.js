@@ -32,14 +32,13 @@ const handler = async (req, res) => {
             const jsonData = await data.json()
             //returns [{"id":3, "note_tree_cid: , "owned_table": , "pub_address": }]
             const noteTreeCID = jsonData[0].note_tree_cid
-            if(!data.ok || !noteTreeCID) return res.status(200).json([]);
+            if(!data.ok || !noteTreeCID) return res.status(200).json({noteTree: []});
             const cid = CID.parse(noteTreeCID);
             const content = await ipfs.dag.get(cid);
-            return res.status(200).json(content)
+            return res.status(200).json({noteTree: content})
           } catch (error) {
             return res.status(500).send(error)
           }
-            break;
         case 'POST':
           try{
             const obj = JSON.parse(req.body)

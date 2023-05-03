@@ -17,13 +17,12 @@ export default async function NoteTreePage({params}) {
   if(!userId) {
     redirect('/')
   }
-
-  const noteTree = await getNoteTree({userId})
-  useNoteStore.setState({noteTree: noteTree})
+  const { value } = await getNoteTree({userId})
+  useNoteStore.setState({noteTree: value})
 
   return(
   <section>
-    <StoreInitializer noteTree={noteTree}/>
+    <StoreInitializer noteTree={value}/>
   </section>
   )
 }

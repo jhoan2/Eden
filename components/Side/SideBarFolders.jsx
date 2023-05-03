@@ -63,7 +63,7 @@ export default function SideBarFolders({setToggleNoteList, deleteFolders}) {
 
   return (
     <div>
-      {noteTree.length > 0 ? 
+      {noteTree.length > 0  ? 
         <div>
           { deleteFolders ?
             <SortableTree

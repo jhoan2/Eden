@@ -1,6 +1,8 @@
 'use client'
 
 export default function NoteListItem({data, setContent}) {
+  
+  const { noteId } = data
 
   return (
     <div>

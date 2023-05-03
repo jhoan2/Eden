@@ -9,12 +9,15 @@ import CreateTableButton from '../components/CreateTableButton'
 // import "@biconomy/web3-auth/dist/src/style.css"
 // import dynamic from "next/dynamic";
 // import { Suspense } from "react";
+import Image from 'next/image'
 import { useNoteStore } from '../components/store';
 import { Database } from "@tableland/sdk";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ConnectKitButton } from 'connectkit';
 import { useAccount } from "wagmi";
+import Footer from '../components/Footer';
+
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -234,6 +237,18 @@ export default function Home() {
         </div>
       </div>
     </main>
+    <div className='flex justify-center'>
+      <h2 className='text-2xl font-bold tracking-tight sm:text-center sm:text-4xl'>Building a community <br></br> that loves learning</h2>
+    </div>
+    <div className='flex justify-around mt-16'>
+      <div className='shadow-xl'>
+        <Image src='/icarus-notes.png' alt='Picture of notes page' width={500} height={500} />
+      </div>
+      <div className='flex items-center'>
+        <p className='text-3xl font-bold tracking-tight'>Share notes. <br/> Take note. <br/> Learn together. </p>
+      </div>
+    </div>
+    <Footer />
     </div>
   );
 }

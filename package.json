@@ -36,7 +36,7 @@
     "connectkit": "^1.2.2",
     "dnd-kit-sortable-tree": "^0.1.57",
     "eslint-config-next": "13.2.4",
-    "ethers": "^6.2.3",
+    "ethers": "^5.7.2",
     "immer": "^9.0.21",
     "ipfs-http-client": "^60.0.0",
     "lowlight": "^2.8.1",

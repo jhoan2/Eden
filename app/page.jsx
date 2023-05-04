@@ -238,14 +238,14 @@ export default function Home() {
       </div>
     </main>
     <div className='flex justify-center'>
-      <h2 className='text-2xl font-bold tracking-tight sm:text-center sm:text-4xl'>Building a community <br></br> that loves learning</h2>
+      <h2 className='text-2xl font-bold tracking-tight sm:text-center sm:text-4xl text-black '>Building a community <br></br> that loves learning</h2>
     </div>
     <div className='flex justify-around mt-16'>
       <div className='shadow-xl'>
         <Image src='/icarus-notes.png' alt='Picture of notes page' width={500} height={500} />
       </div>
       <div className='flex items-center'>
-        <p className='text-3xl font-bold tracking-tight'>Share notes. <br/> Take note. <br/> Learn together. </p>
+        <p className='text-3xl font-bold tracking-tight text-black'>Share notes. <br/> Take note. <br/> Learn together. </p>
       </div>
     </div>
     <Footer />

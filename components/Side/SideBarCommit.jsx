@@ -33,7 +33,7 @@ export default function SideBarCommit() {
       })
     }
     if(arr.length === 0) {
-      const data = await fetch(`http://localhost:3000/api/noteTree`, {
+      const data = await fetch(`http://icarus.community/api/noteTree`, {
         method: "POST",
         body: JSON.stringify(noteTreeObject)
       })
@@ -47,7 +47,7 @@ export default function SideBarCommit() {
     }
     if (arr.length > 0) {
       const [data, dbResponse] = await Promise.all([
-        await fetch(`http://localhost:3000/api/noteTree`, {
+        await fetch(`http://icarus.community/api/noteTree`, {
           method: "POST",
           body: JSON.stringify(noteTreeObject)
         }),

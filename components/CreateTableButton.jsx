@@ -27,7 +27,7 @@ export default function CreateTableButton() {
     setLoading(true);
     const obj = {smartAccountAddress: smartAccountAddress}
     try {
-      await fetch('http://localhost:3000/api/admin', {
+      await fetch('http://icarus.community/api/admin', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',

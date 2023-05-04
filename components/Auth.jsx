@@ -28,11 +28,11 @@ export default function Auth() {
     async function login() {
       if (!sdkRef.current) {
         const socialLoginSDK = new SocialLogin()
-        const signature1 = await socialLoginSDK.whitelistUrl('http://localhost:3000/')
+        const signature1 = await socialLoginSDK.whitelistUrl('http://icarus.community/')
         await socialLoginSDK.init({
           chainId: ethers.utils.hexValue(ChainId.POLYGON_MUMBAI),
           whitelistUrls: {
-            'http://localhost:3000/': signature1,
+            'http://icarus.community/': signature1,
           }
         })
         sdkRef.current = socialLoginSDK

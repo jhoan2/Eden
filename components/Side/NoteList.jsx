@@ -37,7 +37,7 @@ export default function NoteList({toggleNoteList, setToggleNoteList, setContent}
     const fetchNoteById = async (noteCid, noteId) => {
         setLoading(true)
         if(!noteCid) return {noteId: noteId}
-        const response =  await fetch(`http://localhost:3000/api/notesById/?noteCid=${noteCid}`, {method: "GET"})
+        const response =  await fetch(`http://icarus.community/api/notesById/?noteCid=${noteCid}`, {method: "GET"})
         if(!response.ok) {
             throw new Error('Could not retrieve notes')
         }

@@ -71,7 +71,7 @@ const Editor = ({noteId, value, setContent }) => {
 
     try {
       const [data, isInTable] = await Promise.all([
-        await fetch(`http://localhost:3000/api/notesById/`, {
+        await fetch(`http://icarus.community/api/notesById/`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',

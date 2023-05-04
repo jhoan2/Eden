@@ -12,6 +12,8 @@ export const useNoteStore = create(
     user: {},
     insertNotes: new Map(),
     updateNotes: new Map(),
+    deleteNotes: [],
+    addToDeleteNotes: (id) => set((state) => {state.deleteNotes.push(id)}),
     setNoteTreeChanged: () => set({noteTreeChanged: true}),
     addFolder: (folderObject) => set((state) => {state.noteTree.push(folderObject)}),
     addPage: (pageObject) => set((state) => {state.noteTree.push(pageObject)}),
@@ -26,24 +28,7 @@ export const useNoteStore = create(
     //NoteList.jsx and SideBarFolders
     currentFolder: {},
     updateCurrentFolder: (currentFolderObject) => set({currentFolder: currentFolderObject}),
-  //   addNewNote: ({folderId, noteId, cid}) => set(((state) => {
-  //     const noteToAdd = {id: noteId, cid: cid};
-  //     const findNodeById = (node) => {
-  //       if (node.id === folderId) {
-  //         node.notes.push(noteToAdd);
-  //       } else {
-  //         if (node.children) {
-  //           node.children.forEach(findNodeById);
-  //         }
-  //         if (node.notes) {
-  //           node.notes.forEach(findNodeById);
-  //         }
-  //       }
-  //     };
-  //     state.noteTree.forEach(findNodeById);
-  //   })
-  // ),
-      addNewNote: ({folderId, noteId, cid}) => set(produce((state) => {
+    addNewNote: ({folderId, noteId, cid}) => set(produce((state) => {
       const noteToAdd = {id: noteId, cid: cid};
       const findNodeById = (node) => {
         if (node.id === folderId) {
@@ -58,54 +43,71 @@ export const useNoteStore = create(
         }
       };
       state.noteTree.forEach(findNodeById);
-    })
-  ),
-upsertNote: (note) => {
-  set((state) => {
-    if (state.notes[note.id]) {
-      state.notes[note.id] = { ...state.notes[note.id], ...note };
-    } else {
-      const existingNote = Object.values(state.notes).find((n) =>
-        caseInsensitiveStringEqual(n.title, note.title)
-      );
-      if (existingNote) {
-        // Update existing note
-        state.notes[existingNote.id] = {
-          ...state.notes[existingNote.id],
-          ...note,
-        };
-      } else {
-        // Insert new note
-        state.notes[note.id] = note;
-        insertTreeItem(
-          state.noteTree,
-          { id: note.id, children: [], collapsed: true },
-          null
-        );
-      }
-    }
-  });
-},
-  }))
+    })),
+    deleteFolderById: (folderId) => set(produce((state) => {
+      const findAndRemoveNodeById = (nodes) => {
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          if (node.id === folderId) {
+            nodes.splice(i, 1);
+            return true; 
+          } else {
+            if (node.children) {
+              const foundAndRemoved = findAndRemoveNodeById(node.children);
+              if (foundAndRemoved) return true; 
+            }
+          }
+        }
+        return false; 
+      };
+      findAndRemoveNodeById(state.noteTree);
+    })),
+    updateNoteInFolder: ({id, cid}) => set(produce((state) => {
+      const note = {id: id, cid: cid};
+      const findAndRemoveNodeById = (nodes) => {
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          if (node.id === id || !node.id) {
+            nodes.splice(i, 1);
+            nodes.unshift(note);
+            return true; 
+          } else {
+            if (node.children) {
+              const foundAndRemoved = findAndRemoveNodeById(node.children);
+              if (foundAndRemoved) return true; 
+            }
+            if (node.notes) {
+              const foundAndRemoved = findAndRemoveNodeById(node.notes);
+              if (foundAndRemoved) return true; 
+            }
+          }
+        }
+        return false; 
+      };
+      findAndRemoveNodeById(state.noteTree);
+    })),
+    deleteNoteById: ({id}) => set(produce((state) => {
+      const findAndRemoveNodeById = (nodes) => {
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
+          if (node.id === id) {
+            nodes.splice(i, 1);
+            return true; 
+          } else {
+            if (node.children) {
+              const foundAndRemoved = findAndRemoveNodeById(node.children);
+              if (foundAndRemoved) return true; 
+            }
+            if (node.notes) {
+              const foundAndRemoved = findAndRemoveNodeById(node.notes);
+              if (foundAndRemoved) return true; 
+            }
+          }
+        }
+        return false; 
+      };
+      findAndRemoveNodeById(state.noteTree);
+      })
+    ),
+    }))
 )
-
-const insertTreeItem = (tree, item, targetId) => {
-  if (targetId === null) {
-    tree.push(item);
-    return true;
-  }
-
-  for (let i = 0; i < tree.length; i++) {
-    const treeItem = tree[i];
-    if (treeItem.id === targetId) {
-      tree[i].children.push(item);
-      return true;
-    } else if (treeItem.children.length > 0) {
-      const result = insertTreeItem(treeItem.children, item, targetId);
-      if (result) {
-        return result;
-      }
-    }
-  }
-  return false;
-};

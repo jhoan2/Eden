@@ -9,21 +9,24 @@ import CreateTableButton from '../components/CreateTableButton'
 // import "@biconomy/web3-auth/dist/src/style.css"
 // import dynamic from "next/dynamic";
 // import { Suspense } from "react";
+import Image from 'next/image'
 import { useNoteStore } from '../components/store';
 import { Database } from "@tableland/sdk";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ConnectKitButton } from 'connectkit';
 import { useAccount } from "wagmi";
+import Footer from '../components/Footer';
+
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [returningUser, setReturningUser] = useState(false);
+  const [ loadingReturningUser, setLoadingReturningUser ] = useState(true)
   const isMounted = useIsMounted();
   const userTableName = useNoteStore((state) => state.user.owned_table);
   const userID = useNoteStore((state) => state.user.id);
   const { updateSmartAccount, updateUser, smartAccountAddress } = useNoteStore();
-
   const { address, isConnected } = useAccount();
 
   // const SocialLoginDynamic = dynamic(
@@ -34,8 +37,9 @@ export default function Home() {
   // );
   
   const fetchReturningUser = async (smartAccountAddress) => {
-    const db = Database.readOnly("maticmum");
-    const { results } = await db.prepare(`SELECT * FROM icarus_80001_5720 WHERE pub_address='${smartAccountAddress}';`).all();
+    const db = new Database();
+    const { results } = await db.prepare(`SELECT * FROM icarus_80001_5937 WHERE pub_address='${smartAccountAddress}';`).all();
+    setLoadingReturningUser(false)
     return results
   }
 
@@ -47,6 +51,7 @@ export default function Home() {
 
   useEffect(() => {
     if (smartAccountAddress) {
+      setLoadingReturningUser(true)
       try {
         fetchReturningUser(smartAccountAddress).then((result) => {
           if (result[0]?.pub_address === smartAccountAddress) {
@@ -58,7 +63,6 @@ export default function Home() {
         console.log({message: err})
       }
     }
-
   }, [smartAccountAddress, userTableName])
 
   return (
@@ -174,24 +178,29 @@ export default function Home() {
                 Cultivate organized thoughts and never let your ideas wither away with our app. Grow and nurture your ideas together with our collaborative note taking app.
                 Connect your wallet to get started. 
               </p>
-              
-              {smartAccountAddress ?
+
+              { smartAccountAddress ?
                 <div>
-                  {returningUser ? 
-                  <div className="mt-8 flex gap-x-4 sm:justify-center">
-                  <Link 
-                  href={`/user/${userID}`}
-                  className="inline-block rounded-lg bg-emerald-600 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm ring-1 ring-emerald-600 hover:bg-emerald-700 hover:ring-emerald-700"
-                  >
-                    Launch App
-                    <span className="text-emerald-200" aria-hidden="true">
-                      &rarr;
-                    </span>
-                  </Link>              
-                </div> :
-                <div className="mt-8 flex gap-x-4 sm:justify-center">
-                  <CreateTableButton /> 
-                </div>
+                  { loadingReturningUser ? 
+                    <p className='mt-8 flex gap-x-4 sm:justify-center'>Fetching user details...</p> :
+                    <div>
+                      { returningUser ? 
+                        <div className="mt-8 flex gap-x-4 sm:justify-center">
+                        <Link 
+                        href={`/user/${userID}`}
+                        className="inline-block rounded-lg bg-emerald-600 px-4 py-1.5 text-base font-semibold leading-7 text-white shadow-sm ring-1 ring-emerald-600 hover:bg-emerald-700 hover:ring-emerald-700"
+                        >
+                        Launch App
+                        <span className="text-emerald-200" aria-hidden="true">
+                          &rarr;
+                        </span>
+                        </Link>              
+                        </div> :
+                        <div className="mt-8 flex gap-x-4 sm:justify-center">
+                          <CreateTableButton /> 
+                        </div>
+                      }
+                    </div>
                   }
                 </div> :
                 null
@@ -228,6 +237,18 @@ export default function Home() {
         </div>
       </div>
     </main>
+    <div className='flex justify-center'>
+      <h2 className='text-2xl font-bold tracking-tight sm:text-center sm:text-4xl'>Building a community <br></br> that loves learning</h2>
+    </div>
+    <div className='flex justify-around mt-16'>
+      <div className='shadow-xl'>
+        <Image src='/icarus-notes.png' alt='Picture of notes page' width={500} height={500} />
+      </div>
+      <div className='flex items-center'>
+        <p className='text-3xl font-bold tracking-tight'>Share notes. <br/> Take note. <br/> Learn together. </p>
+      </div>
+    </div>
+    <Footer />
     </div>
   );
 }
